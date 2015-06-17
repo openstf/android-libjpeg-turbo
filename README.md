@@ -36,7 +36,7 @@ Then add this repo as a submodule to your own project.
 
 ```bash
 git submodule add --name libjpeg-turbo \
-  https://github.com/openstf/android-libjpeg-turbo jni/vendor/libjpeg-turbo
+  https://github.com/openstf/android-libjpeg-turbo.git jni/vendor/libjpeg-turbo
 ```
 
 You should now be able to do `LOCAL_STATIC_LIBRARIES += libjpeg-turbo` in your own module, `#include <turbojpeg.h>` and `ndk-build`.
