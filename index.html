@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Android-libjpeg-turbo by openstf</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Android-libjpeg-turbo</h1>
+      <h2 class="project-tagline">Standalone Android.mk configuration for libjpeg-turbo.</h2>
+      <a href="https://github.com/openstf/android-libjpeg-turbo" class="btn">View on GitHub</a>
+      <a href="https://github.com/openstf/android-libjpeg-turbo/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/openstf/android-libjpeg-turbo/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="libjpeg-turbo-for-android" class="anchor" href="#libjpeg-turbo-for-android" aria-hidden="true"><span class="octicon octicon-link"></span></a>libjpeg-turbo for Android</h1>
+
+<p>This repository provides a working Android.mk build configuration for <a href="http://libjpeg-turbo.virtualgl.org/">libjpeg-turbo</a>, which means that you'll be able to build your app with <code>ndk-build</code> instead of resorting to toolchain trickery. Just add this repository as a Git submodule and you should be good to go.</p>
+
+<p>Note however that this repository was originally created for a single purpose; to encode JPG files in a different NDK project. Therefore JNI bindings are not provided but a pull request is welcome. Also, any libjpeg-turbo feature that requires another dependency is currently not supported (incl. colorspace conversions). Again, pull requests are welcome.</p>
+
+<p>Currrently, the following ABIs are supported:</p>
+
+<ul>
+<li>armeabi</li>
+<li>armeabi-v7a</li>
+<li>armeabi-v7a-hard</li>
+<li>arm64-v8a</li>
+<li>x86</li>
+<li>x86_64, requires <a href="https://developer.android.com/tools/sdk/ndk/index.html">Android NDK</a> Revision 10e (May 2015) or later</li>
+</ul>
+
+<p>SIMD/ASM optimizations are enabled for supported ABIs where possible. libjpeg-turbo does not support MIPS properly (yet). Since MIPS is not supported, you'll need to specify your supported ABIs in <code>Application.mk</code> instead of simply giving it <code>APP_ABI := all</code>.</p>
+
+<p>Note that compiler optimization options are NOT included right now. If, for example, you wish to use <code>-Ofast</code> or other options, you'll need to add them yourself, possibly to your <code>Application.mk</code>.</p>
+
+<h2>
+<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h2>
+
+<p>The following combinations are known to work:</p>
+
+<ul>
+<li>
+<a href="https://developer.android.com/tools/sdk/ndk/index.html">Android NDK</a>, Revision 10e (May 2015)</li>
+</ul>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>First, set up a vendor folder in your own project. You can skip this step if you've already decided where you wish to put the module.</p>
+
+<div class="highlight highlight-bash"><pre>mkdir -p jni/vendor
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>include $(call all-subdir-makefiles)<span class="pl-pds">'</span></span> <span class="pl-k">&gt;&gt;</span> jni/vendor/Android.mk</pre></div>
+
+<p>Then add this repo as a submodule to your own project.</p>
+
+<div class="highlight highlight-bash"><pre>git submodule add --name libjpeg-turbo \
+  https://github.com/openstf/android-libjpeg-turbo.git jni/vendor/libjpeg-turbo</pre></div>
+
+<p>You should now be able to do <code>LOCAL_STATIC_LIBRARIES += libjpeg-turbo</code> in your own module, <code>#include &lt;turbojpeg.h&gt;</code> and <code>ndk-build</code>.</p>
+
+<h2>
+<a id="updating-libjpeg-turbo" class="anchor" href="#updating-libjpeg-turbo" aria-hidden="true"><span class="octicon octicon-link"></span></a>Updating libjpeg-turbo</h2>
+
+<p>You need to go and fetch <a href="http://libjpeg-turbo.virtualgl.org/">libjpeg-turbo</a> first. <a href="http://sourceforge.net/projects/libjpeg-turbo/files/">Download</a> and extract the source package to <code>jni/vendor/libjpeg-turbo</code>. It's not a submodule because they still use SVN. Check <code>jni/vendor/libjpeg-turbo/Android.mk</code> to see which version of libjpeg-turbo is expected.</p>
+
+<div class="highlight highlight-bash"><pre><span class="pl-c1">cd</span> jni/vendor/libjpeg-turbo
+cp <span class="pl-k">~</span>/Downloads/libjpeg-turbo-1.4.1.tar.gz <span class="pl-c1">.</span>
+tar xzvf libjpeg-turbo-1.4.1.tar.gz</pre></div>
+
+<p>To make updating easier, the <code>jni/vendor/libjpeg-turbo/libjpeg-turbo-*-*-*</code> folder should contain only unmodified original source files. Do not configure or move files around, it will be a pain later. Just unpack the source package and leave it be as-is.</p>
+
+<p>You may sometimes also need to update the convenience files in <code>jni/vendor/libjpeg-turbo/include</code>. This doesn't seem to happen very often, though.</p>
+
+<p>Now update the <code>SOURCE_PATH</code> in <code>jni/vendor/libjpeg-turbo/Android.mk</code>. Then run <code>ndk-build</code> to make sure nothing broke.</p>
+
+<p>Then <code>git rm -r</code> the previous libjpeg-turbo source and commit the new source with your <code>Android.mk</code> modification(s).</p>
+
+<h2>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributing</h2>
+
+<p>See <a href="CONTRIBUTING.md">CONTRIBUTING.md</a>.</p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>See <a href="LICENSE">LICENSE</a>. libjpeg-turbo itself is governed by its own license.</p>
+
+<p>Copyright © CyberAgent, Inc. All Rights Reserved.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/openstf/android-libjpeg-turbo">Android-libjpeg-turbo</a> is maintained by <a href="https://github.com/openstf">openstf</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-64458786-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
+
