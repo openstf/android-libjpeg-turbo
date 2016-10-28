@@ -76,6 +76,8 @@ LOCAL_SRC_FILES += \
 LOCAL_CFLAGS += \
 	-DSIZEOF_SIZE_T=4 \
 
+LOCAL_ASMFLAGS += -DPIC
+
 else ifneq ($(filter $(TARGET_ARCH_ABI), armeabi-v7a armeabi-v7a-hard),)
 LOCAL_SRC_FILES += \
 	$(SOURCE_PATH)/simd/jsimd_arm.c \
