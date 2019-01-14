@@ -636,5 +636,5 @@ jinit_c_master_control(j_compress_ptr cinfo, boolean transcode_only)
   else
     master->total_passes = cinfo->num_scans;
 
-  master->jpeg_version = "Turbo-2.0.1";
+  master->jpeg_version = PACKAGE_NAME " version " VERSION " (build " BUILD ")";
 }
