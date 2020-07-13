@@ -1,5 +1,9 @@
 # libjpeg-turbo for Android
 
+# Warning
+
+This repository was superseded by https://github.com/DeviceFarmer/android-libjpeg-turbo
+
 This repository provides a working Android.mk build configuration for [libjpeg-turbo](http://libjpeg-turbo.virtualgl.org/), which means that you'll be able to build your app with `ndk-build` instead of resorting to toolchain trickery. Just add this repository as a Git submodule and you should be good to go.
 
 Note however that this repository was originally created for a single purpose; to encode JPG files in a different NDK project. Therefore JNI bindings are not provided but a pull request is welcome. Also, any libjpeg-turbo feature that requires another dependency is currently not supported (incl. colorspace conversions). Again, pull requests are welcome.
